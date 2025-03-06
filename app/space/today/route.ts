@@ -45,3 +45,7 @@ export async function GET() {
     );
   }
 }
+
+// Example request for GET
+// Change the example request to cURL format
+// ...
