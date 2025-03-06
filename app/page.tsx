@@ -1,119 +1,159 @@
 "use client";
+import {
+  Calendar,
+  ChevronDown,
+  Clipboard,
+  ClipboardCheck,
+  OrbitIcon,
+  RocketIcon,
+  SparklesIcon,
+} from "lucide-react";
+import { useState } from "react";
 
-import Link from "next/link";
+const Home = () => {
+  // Track copied state for each button
+  const [copiedStates, setCopiedStates] = useState({
+    marsGet: false,
+    marsPost: false,
+    issGet: false,
+    todayGet: false,
+    marsGetResponse: false,
+    marsPostResponse: false,
+    issResponse: false,
+    todayResponse: false,
+  });
 
-export default function Home() {
+  // Handle copy function
+  const handleCopy = (text: string, buttonId: string) => {
+    navigator.clipboard.writeText(text);
+
+    // Update the copied state for this specific button
+    setCopiedStates((prev) => ({
+      ...prev,
+      [buttonId]: true,
+    }));
+
+    // Reset the copied state after 2 seconds
+    setTimeout(() => {
+      setCopiedStates((prev) => ({
+        ...prev,
+        [buttonId]: false,
+      }));
+    }, 2000);
+  };
+
+  // Toggle response format visibility
+  const toggleResponseFormat = (id: string) => {
+    const content = document.getElementById(id);
+    if (content) {
+      content.classList.toggle("hidden");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 p-4 md:p-8 font-[family-name:var(--font-geist-sans)]">
-      <header className="max-w-7xl mx-auto mb-12 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-gray-950 p-4 md:p-8 font-sans">
+      <header className="max-w-5xl mx-auto mb-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight">
           Space API
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
-          Get key info of space like ISS location, Mars data and more!
+        <p className="text-gray-300 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+          Explore the cosmos with our Space API. Access Mars rover photos, ISS
+          location data, and astronomy picture of the day.
         </p>
       </header>
 
-      <main className="max-w-7xl mx-auto">
+      <main className="max-w-5xl mx-auto">
         {/* API Method Legend */}
         <div className="flex justify-center gap-6 mb-8">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-            <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">
+            <span className="text-xs text-gray-300 uppercase tracking-wider font-medium">
               GET
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium">
+            <span className="text-xs text-gray-300 uppercase tracking-wider font-medium">
               POST
             </span>
           </div>
         </div>
 
         {/* API Endpoints Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Mars GET API */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-800 overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="h-7 w-7 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mr-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-red-500 dark:text-red-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    />
-                  </svg>
+                <div className="w-10 h-10 mr-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white flex items-center justify-center shadow-md">
+                  <SparklesIcon size={20} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-600/90 text-white">
                     GET
                   </span>
-                  <h2 className="text-base font-semibold text-gray-900 dark:text-white ml-1 inline-block">
-                    /api/space/mars
+                  <h2 className="text-base font-semibold text-white ml-1 inline-block">
+                    /space/mars
                   </h2>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                Fetches the latest photos from the Curiosity rover and current
-                Mars weather data.
+              <p className="text-sm text-gray-300 mb-4">
+                Fetches Mars rover data including latest photos, cameras, and
+                mission details.
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 mb-4 relative group border border-gray-100 dark:border-gray-800">
+              <div className="bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 mb-5 relative group/code border border-gray-700/80 transition-all duration-300 hover:border-gray-600">
                 <div className="flex justify-between items-center mb-2">
-                  <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <h4 className="text-xs font-medium text-gray-300">
                     Example Request
                   </h4>
                   <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `curl -X GET 'https://api/space/mars'`
-                      );
-                    }}
+                    className="text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200"
+                    onClick={() =>
+                      handleCopy(
+                        `curl -X GET 'https://space-api-sevice.vercel.app/space/mars'`,
+                        "marsGet"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.marsGet ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
-                  <code>{`curl -X GET 'https://api/space/mars'`}</code>
+                <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <code>{`curl -X GET 'https://space-api-sevice.vercel.app/space/mars'`}</code>
                 </pre>
               </div>
 
-              <details className="group response-details">
-                <summary className="flex items-center justify-between cursor-pointer">
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
-                    Response Format
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-300 group-open:rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </summary>
-                <div className="mt-3 bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 relative group border border-gray-100 dark:border-gray-800 overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-96">
+              <div className="group/response">
+                <button
+                  className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-1.5 bg-gray-800/50 hover:bg-gray-800 px-3 py-2 rounded-lg w-full justify-between border border-gray-700/50"
+                  onClick={() =>
+                    toggleResponseFormat("mars-get-response-format")
+                  }
+                >
+                  <span>Response Format</span>
+                  <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/response:rotate-180" />
+                </button>
+                <div
+                  id="mars-get-response-format"
+                  className="mt-3 hidden bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 relative border border-gray-700/80 overflow-hidden transition-all duration-300 ease-in-out"
+                >
                   <button
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`{
+                    className="absolute top-3 right-3 text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200 z-10"
+                    onClick={() =>
+                      handleCopy(
+                        `{
   "latest_photos": [
     {
       "id": 102693,
@@ -134,17 +174,26 @@ export default function Home() {
         "status": "active"
       }
     }
-  ],
-  "weather": {
-    // Mars weather data
-  }
-}`);
-                    }}
+  ]
+}`,
+                        "marsGetResponse"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.marsGetResponse ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
-                  <div className="max-h-40 overflow-y-auto">
-                    <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <div className="max-h-60 overflow-y-auto">
+                    <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
                       <code>{`{
   "latest_photos": [
     {
@@ -166,99 +215,87 @@ export default function Home() {
         "status": "active"
       }
     }
-  ],
-  "weather": {
-    // Mars weather data
-  }
+  ]
 }`}</code>
                     </pre>
                   </div>
                 </div>
-              </details>
+              </div>
             </div>
           </div>
 
           {/* Mars POST API */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-800 overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="h-7 w-7 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mr-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-red-500 dark:text-red-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    />
-                  </svg>
+                <div className="w-10 h-10 mr-3 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white flex items-center justify-center shadow-md">
+                  <RocketIcon size={20} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-600/90 text-white">
                     POST
                   </span>
-                  <h2 className="text-base font-semibold text-gray-900 dark:text-white ml-1 inline-block">
-                    /api/space/mars
+                  <h2 className="text-base font-semibold text-white ml-1 inline-block">
+                    /space/mars
                   </h2>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                Fetches Mars rover photos based on specified rover, sol (Mars
-                day), and camera.
+              <p className="text-sm text-gray-300 mb-4">
+                Fetches Mars rover photos based on specified parameters.
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 mb-4 relative group border border-gray-100 dark:border-gray-800">
+              <div className="bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 mb-5 relative group/code border border-gray-700/80 transition-all duration-300 hover:border-gray-600">
                 <div className="flex justify-between items-center mb-2">
-                  <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <h4 className="text-xs font-medium text-gray-300">
                     Example Request
                   </h4>
                   <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `curl -X POST 'https://api/space/mars' -H 'Content-Type: application/json' -d '{"rover": "curiosity", "sol": 1000, "camera": "FHAZ"}'`
-                      );
-                    }}
+                    className="text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200"
+                    onClick={() =>
+                      handleCopy(
+                        `curl -X POST 'https://space-api-sevice.vercel.app/space/mars' -H 'Content-Type: application/json' -d '{"rover": "curiosity", "sol": 1000, "camera": "FHAZ"}'`,
+                        "marsPost"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.marsPost ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
-                  <code>{`curl -X POST 'https://api/space/mars' -H 'Content-Type: application/json' -d '{"rover": "curiosity", "sol": 1000, "camera": "FHAZ"}'`}</code>
+                <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <code>{`curl -X POST 'https://space-api-sevice.vercel.app/space/mars' -H 'Content-Type: application/json' -d '{"rover": "curiosity", "sol": 1000, "camera": "FHAZ"}'`}</code>
                 </pre>
               </div>
 
-              <details className="group response-details">
-                <summary className="flex items-center justify-between cursor-pointer">
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
-                    Response Format
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-300 group-open:rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </summary>
-                <div className="mt-3 bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 relative group border border-gray-100 dark:border-gray-800 overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-96">
+              <div className="group/response mb-5">
+                <button
+                  className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-1.5 bg-gray-800/50 hover:bg-gray-800 px-3 py-2 rounded-lg w-full justify-between border border-gray-700/50"
+                  onClick={() =>
+                    toggleResponseFormat("mars-post-response-format")
+                  }
+                >
+                  <span>Response Format</span>
+                  <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/response:rotate-180" />
+                </button>
+                <div
+                  id="mars-post-response-format"
+                  className="mt-3 hidden bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 relative border border-gray-700/80 overflow-hidden transition-all duration-300 ease-in-out"
+                >
                   <button
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`{
+                    className="absolute top-3 right-3 text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200 z-10"
+                    onClick={() =>
+                      handleCopy(
+                        `{
   "photos": [
     {
       "id": 102693,
@@ -280,13 +317,25 @@ export default function Home() {
       }
     }
   ]
-}`);
-                    }}
+}`,
+                        "marsPostResponse"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.marsPostResponse ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
-                  <div className="max-h-40 overflow-y-auto">
-                    <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <div className="max-h-60 overflow-y-auto">
+                    <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
                       <code>{`{
   "photos": [
     {
@@ -313,88 +362,117 @@ export default function Home() {
                     </pre>
                   </div>
                 </div>
-              </details>
+              </div>
+
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-gray-200 mb-3">
+                  Required Parameters:
+                </h4>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="text-xs font-medium bg-blue-900/40 text-blue-300 px-2.5 py-1.5 rounded-md mr-2 border border-blue-800/50">
+                      rover
+                    </span>
+                    <span className="text-xs text-gray-300 pt-1">
+                      Valid values: &quot;curiosity&quot;,
+                      &quot;opportunity&quot;, &quot;spirit&quot;,
+                      &quot;perseverance&quot;
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-xs font-medium bg-blue-900/40 text-blue-300 px-2.5 py-1.5 rounded-md mr-2 border border-blue-800/50">
+                      sol
+                    </span>
+                    <span className="text-xs text-gray-300 pt-1">
+                      Mars day (integer). Example: 1000
+                    </span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-xs font-medium bg-blue-900/40 text-blue-300 px-2.5 py-1.5 rounded-md mr-2 border border-blue-800/50">
+                      camera
+                    </span>
+                    <span className="text-xs text-gray-300 pt-1">
+                      Valid values: &quot;FHAZ&quot;, &quot;RHAZ&quot;,
+                      &quot;MAST&quot;, &quot;CHEMCAM&quot;, &quot;MAHLI&quot;,
+                      &quot;MARDI&quot;, &quot;NAVCAM&quot;, etc.
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
           {/* ISS GET API */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-800 overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="w-8 h-8 mr-3 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
+                <div className="w-10 h-10 mr-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white flex items-center justify-center shadow-md">
+                  <OrbitIcon size={20} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-600/90 text-white">
                     GET
                   </span>
-                  <h2 className="text-base font-semibold text-gray-900 dark:text-white ml-1 inline-block">
-                    /api/space/iss
+                  <h2 className="text-base font-semibold text-white ml-1 inline-block">
+                    /space/iss
                   </h2>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              <p className="text-sm text-gray-300 mb-4">
                 Get real-time information about the International Space Station,
                 including its current location, crew members, and orbital data.
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 mb-4 relative group border border-gray-100 dark:border-gray-800">
+              <div className="bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 mb-5 relative group/code border border-gray-700/80 transition-all duration-300 hover:border-gray-600">
                 <div className="flex justify-between items-center mb-2">
-                  <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <h4 className="text-xs font-medium text-gray-300">
                     Example Request
                   </h4>
                   <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `curl -X GET 'https://api/space/iss'`
-                      );
-                    }}
+                    className="text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200"
+                    onClick={() =>
+                      handleCopy(
+                        `curl -X GET 'https://space-api-sevice.vercel.app/space/iss'`,
+                        "issGet"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.issGet ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
-                  <code>{`curl -X GET 'https://api/space/iss'`}</code>
+                <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <code>{`curl -X GET 'https://space-api-sevice.vercel.app/space/iss'`}</code>
                 </pre>
               </div>
 
-              <div className="group">
+              <div className="group/response">
                 <button
-                  className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 flex items-center cursor-pointer"
-                  onClick={() => {
-                    const content = document.getElementById(
-                      "iss-response-format"
-                    );
-                    if (content) {
-                      content.classList.toggle("hidden");
-                    }
-                  }}
+                  className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-1.5 bg-gray-800/50 hover:bg-gray-800 px-3 py-2 rounded-lg w-full justify-between border border-gray-700/50"
+                  onClick={() => toggleResponseFormat("iss-response-format")}
                 >
                   <span>Response Format</span>
+                  <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/response:rotate-180" />
                 </button>
                 <div
                   id="iss-response-format"
-                  className="mt-3 hidden bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 relative group border border-gray-100 dark:border-gray-800 overflow-hidden transition-all duration-300 ease-in-out"
+                  className="mt-3 hidden bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 relative border border-gray-700/80 overflow-hidden transition-all duration-300 ease-in-out"
                 >
                   <button
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`{
+                    className="absolute top-3 right-3 text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200 z-10"
+                    onClick={() =>
+                      handleCopy(
+                        `{
   "timestamp": 1625176948,
   "iss_position": {
     "latitude": 45.5678,
@@ -422,21 +500,26 @@ export default function Home() {
       "Pyotr Dubrov",
       "Oleg Novitskiy"
     ]
-  },
-  "next_passes": {
-    "info": "For ISS pass predictions over a specific location, provide lat/long parameters"
-  },
-  "request_info": {
-    "format": "json",
-    "user_agent": "curl/7.64.1"
   }
-}`);
-                    }}
+}`,
+                        "issResponse"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.issResponse ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
-                  <div className="max-h-40 overflow-y-auto">
-                    <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <div className="max-h-60 overflow-y-auto">
+                    <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
                       <code>{`{
   "timestamp": 1625176948,
   "iss_position": {
@@ -465,13 +548,6 @@ export default function Home() {
       "Pyotr Dubrov",
       "Oleg Novitskiy"
     ]
-  },
-  "next_passes": {
-    "info": "For ISS pass predictions over a specific location, provide lat/long parameters"
-  },
-  "request_info": {
-    "format": "json",
-    "user_agent": "curl/7.64.1"
   }
 }`}</code>
                     </pre>
@@ -482,197 +558,146 @@ export default function Home() {
           </div>
 
           {/* Today GET API */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-800 overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="h-7 w-7 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mr-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-500 dark:text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+                <div className="w-10 h-10 mr-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white flex items-center justify-center shadow-md">
+                  <Calendar size={20} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-600/90 text-white">
                     GET
                   </span>
-                  <h2 className="text-base font-semibold text-gray-900 dark:text-white ml-1 inline-block">
-                    /api/space/today
+                  <h2 className="text-base font-semibold text-white ml-1 inline-block">
+                    /space/today
                   </h2>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                Fetches NASA&apos;s Astronomy Picture of the Day (APOD) and the
-                latest space-related news.
+              <p className="text-sm text-gray-300 mb-4">
+                Fetches NASA&apos;s Astronomy Picture of the Day (APOD) and
+                space-related news for today.
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 mb-4 relative group border border-gray-100 dark:border-gray-800">
+              <div className="bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 mb-5 relative group/code border border-gray-700/80 transition-all duration-300 hover:border-gray-600">
                 <div className="flex justify-between items-center mb-2">
-                  <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <h4 className="text-xs font-medium text-gray-300">
                     Example Request
                   </h4>
                   <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `curl -X GET 'https://api/space/today'`
-                      );
-                    }}
+                    className="text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200"
+                    onClick={() =>
+                      handleCopy(
+                        `curl -X GET 'https://space-api-sevice.vercel.app/space/today'`,
+                        "todayGet"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.todayGet ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
-                  <code>{`curl -X GET 'https://api/space/today'`}</code>
+                <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <code>{`curl -X GET 'https://space-api-sevice.vercel.app/space/today'`}</code>
                 </pre>
               </div>
 
-              <details className="group response-details">
-                <summary className="flex items-center justify-between cursor-pointer">
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
-                    Response Format
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-300 group-open:rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </summary>
-                <div className="mt-3 bg-gray-50 dark:bg-gray-900/80 rounded-lg p-3 relative group border border-gray-100 dark:border-gray-800 overflow-hidden transition-all duration-300 ease-in-out max-h-0 group-open:max-h-96">
+              <div className="group/response">
+                <button
+                  className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-1.5 bg-gray-800/50 hover:bg-gray-800 px-3 py-2 rounded-lg w-full justify-between border border-gray-700/50"
+                  onClick={() => toggleResponseFormat("today-response-format")}
+                >
+                  <span>Response Format</span>
+                  <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/response:rotate-180" />
+                </button>
+                <div
+                  id="today-response-format"
+                  className="mt-3 hidden bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 relative border border-gray-700/80 overflow-hidden transition-all duration-300 ease-in-out"
+                >
                   <button
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`{
+                    className="absolute top-3 right-3 text-xs px-2.5 py-1.5 bg-gray-700 rounded-md border border-gray-600 hover:bg-gray-600 transition-all duration-200 flex items-center gap-1.5 text-gray-200 z-10"
+                    onClick={() =>
+                      handleCopy(
+                        `{
   "apod": {
-    "title": "A Martian Eclipse: Phobos Crosses the Sun",
-    "explanation": "What&apos;s that passing in front of the Sun? It looks like a moon, but it can&apos;t be Earth&apos;s Moon, because it isn&apos;t round...",
-    "image_url": "https://apod.nasa.gov/apod/image/2303/PhobosTransit_Curiosity_960.jpg"
+    "title": "A Galaxy Beyond Stars, Gas, and Dust",
+    "explanation": "This galaxy isn't visible to the eye...",
+    "image_url": "https://apod.nasa.gov/apod/image/2304/M104_HubbleSchmidt_1019.jpg"
   },
   "news": [
     {
-      "title": "SpaceX launches Starship in first successful test flight",
-      "content": "SpaceX&apos;s Starship, the most powerful rocket ever built, completed its first successful test flight...",
-      "link": "https://example.com/spacex-starship-news"
+      "title": "SpaceX launches Falcon 9 with Starlink satellites",
+      "content": "SpaceX launched another batch of Starlink satellites...",
+      "link": "https://www.space.com/spacex-starlink-launch-april-2023"
     }
   ]
-}`);
-                    }}
+}`,
+                        "todayResponse"
+                      )
+                    }
                   >
-                    Copy
+                    {copiedStates.todayResponse ? (
+                      <>
+                        <ClipboardCheck size={14} />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard size={14} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
-                  <div className="max-h-40 overflow-y-auto">
-                    <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
+                  <div className="max-h-60 overflow-y-auto">
+                    <pre className="bg-gray-900/90 text-gray-100 p-3 rounded-lg overflow-x-auto text-xs">
                       <code>{`{
   "apod": {
-    "title": "A Martian Eclipse: Phobos Crosses the Sun",
-    "explanation": "What&apos;s that passing in front of the Sun? It looks like a moon, but it can&apos;t be Earth&apos;s Moon, because it isn&apos;t round...",
-    "image_url": "https://apod.nasa.gov/apod/image/2303/PhobosTransit_Curiosity_960.jpg"
+    "title": "A Galaxy Beyond Stars, Gas, and Dust",
+    "explanation": "This galaxy isn't visible to the eye...",
+    "image_url": "https://apod.nasa.gov/apod/image/2304/M104_HubbleSchmidt_1019.jpg"
   },
   "news": [
     {
-      "title": "SpaceX launches Starship in first successful test flight",
-      "content": "SpaceX&apos;s Starship, the most powerful rocket ever built, completed its first successful test flight...",
-      "link": "https://example.com/spacex-starship-news"
+      "title": "SpaceX launches Falcon 9 with Starlink satellites",
+      "content": "SpaceX launched another batch of Starlink satellites...",
+      "link": "https://www.space.com/spacex-starlink-launch-april-2023"
     }
   ]
 }`}</code>
                     </pre>
                   </div>
                 </div>
-              </details>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      <footer className="max-w-7xl mx-auto mt-12 pt-6 border-t border-gray-200 dark:border-gray-800 text-center text-gray-400 dark:text-gray-500 text-xs">
-        <p>
-          © {new Date().getFullYear()} Space API. Made by{" "}
-          <Link
-            href={"https://x.com/madebyshaurya"}
+      <footer className="max-w-7xl mx-auto mt-24 text-center text-sm text-gray-400">
+        <p className="flex items-center justify-center gap-1">
+          <span className="bg-gradient-to-r from-blue-500 to-purple-600 h-1.5 w-1.5 rounded-full inline-block mr-1"></span>
+          Space API • Made by
+          <a
+            className="relative inline-block text-gray-300 transition-colors duration-200 hover:text-white after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-px after:bottom-0 after:left-0 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left ml-1"
+            href="https://x.com/madebyshaurya"
             target="_blank"
-            className="underline hover:no-underline transition-all"
+            rel="noopener noreferrer"
           >
             Shaurya
-          </Link>
+          </a>
         </p>
       </footer>
-
-      {/* Client-side script for copy button functionality */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-          document.addEventListener('DOMContentLoaded', () => {
-            const copyButtons = document.querySelectorAll('[data-copy]');
-            copyButtons.forEach(button => {
-              button.addEventListener('click', () => {
-                const textToCopy = button.getAttribute('data-copy');
-                navigator.clipboard.writeText(textToCopy);
-                
-                // Show feedback
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                setTimeout(() => {
-                  button.textContent = originalText;
-                }, 2000);
-              });
-            });
-          });
-        `,
-        }}
-      />
-
-      {/* Add this style to your CSS or within a <style> tag in your component */}
-      <style jsx>{`
-        /* Remove default details marker */
-        details.response-details {
-          list-style: none;
-        }
-
-        /* Hide default triangle in all browsers */
-        details.response-details summary::-webkit-details-marker,
-        details.response-details summary::marker {
-          display: none;
-        }
-
-        /* Style for summary element */
-        details.response-details summary {
-          outline: none;
-          padding: 0.5rem 0;
-          border-radius: 0.25rem;
-        }
-
-        /* Add hover effect */
-        details.response-details summary:hover {
-          background-color: rgba(0, 0, 0, 0.025);
-        }
-
-        /* Dark mode hover */
-        @media (prefers-color-scheme: dark) {
-          details.response-details summary:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-          }
-        }
-      `}</style>
     </div>
   );
-}
+};
+
+export default Home;
